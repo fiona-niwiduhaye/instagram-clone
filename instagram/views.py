@@ -30,6 +30,7 @@ def signup(request):
 
 
 
+
 @login_required(login_url='login')
 def index(request):
     images = Post.objects.all()
