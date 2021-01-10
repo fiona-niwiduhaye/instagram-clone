@@ -1,0 +1,7 @@
+ id |                                    password                                    |          last_login           | is_superuser |     username     | first_name | last_name |          email          | is_staff | is_active |          date_joined          
+----+--------------------------------------------------------------------------------+-------------------------------+--------------+------------------+------------+-----------+-------------------------+----------+-----------+-------------------------------
+  2 | pbkdf2_sha256$216000$XCPiiGILObne$57VyYkL0iJFdSvFTEGoFIiPAKk2ci6Ub65X4FqkqD7w= | 2021-01-04 11:01:48.537397+02 | f            | niwiduhaye       |            |           | fionaniwe2020@gmail.com | f        | t         | 2021-01-04 11:01:47.420136+02
+  3 | pbkdf2_sha256$216000$YaXI0eLy7f4G$cCGPAgtT6VHyje+VelvtQdcjcl/hiCzixMehtEPRxLM= | 2021-01-04 11:18:47.647675+02 | f            | izere-dema       |            |           | fionaniwe2020@gmail.com | f        | t         | 2021-01-04 11:18:47.200496+02
+  1 | pbkdf2_sha256$216000$J7m37AM77NBf$cXXXBNVa3a/2guHaIYq9Ivof1bbevzw/UVJYPZfBVAw= | 2021-01-10 07:32:48.288956+02 | t            | niwiduhaye-fiona |            |           | fionaniwe@gmail.com     | t        | t         | 2020-12-28 11:46:37.663149+02
+(3 rows)
+
