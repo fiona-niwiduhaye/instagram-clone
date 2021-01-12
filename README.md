@@ -36,7 +36,7 @@ This project uses major technologies which are :
 
 ### Live link
 
-You can view the project through this link :
+You can view the project through this link :https://fioinstagram.herokuapp.com/
 
 ### Contact Information
 
