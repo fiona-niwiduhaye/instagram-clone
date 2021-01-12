@@ -7,9 +7,6 @@ from .models import Post,Profile,Comment,Follow
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.views.generic import RedirectView
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import authentication, permissions
 
 
 def signup(request):
@@ -72,10 +69,10 @@ def profile(request, username):
 
 
 @login_required(login_url='login')
-def user_profile(request, username):
-    user_prof = get_object_or_404(User, username=username)
+def user_profile(request, id):
+    user_prof = get_object_or_404(User, id=id)
     if request.user == user_prof:
-        return redirect('profile', username=request.user.username)
+        return redirect('profile', id=request.user.id)
     user_posts = user_prof.profile.posts.all()
     
     followers = Follow.objects.filter(followed=user_prof.profile)
@@ -91,7 +88,7 @@ def user_profile(request, username):
         'followers': followers,
         'follow_status': follow_status
     }
-    print(followers)
+    print(user_prof)
     return render(request, 'user/user_profile.html', params)
 
 
@@ -108,7 +105,7 @@ def post_comment(request, id):
             savecomment.post = image
             savecomment.user = request.user.profile
             savecomment.save()
-            return HttpResponseRedirect(request.path_info)
+            return HttpResponseRedirect(request.url_info)
     else:
         form = CommentForm()
     params = {
@@ -119,46 +116,6 @@ def post_comment(request, id):
     }
     return render(request, 'user/single_post.html', params)
 
-
-class PostLikeToggle(RedirectView):
-    def get_redirect_url(self, *args, **kwargs):
-        id = self.kwargs.get('id')
-        print(id)
-        obj = get_object_or_404(Post, pk=id)
-        url_ = obj.get_absolute_url()
-        user = self.request.user
-        if user in obj.likes.all():
-            obj.likes.remove(user)
-        else:
-            obj.likes.add(user)
-        return url_
-
-
-class PostLikeAPIToggle(APIView):
-    authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, id=None, format=None):
-        # id = self.kwargs.get('id')
-        obj = get_object_or_404(Post, pk=id)
-        url_ = obj.get_absolute_url()
-        user = self.request.user
-        updated = False
-        liked = False
-        if user in obj.likes.all():
-            liked = False
-            obj.likes.remove(user)
-        else:
-            liked = True
-            obj.likes.add(user)
-        updated = True
-        data = {
-
-            'updated': updated,
-            'liked': liked,
-        }
-        print(data)
-        return Response(data)
 
 
 def like_post(request):
@@ -188,7 +145,7 @@ def search_profile(request):
         name = request.GET.get("search_user")
         results = Profile.search_profile(name)
         print(results)
-        message = f'name'
+        message = f'{name}'
         params = {
             'results': results,
             'message': message
@@ -213,3 +170,20 @@ def follow(request, to_follow):
         follow_s = Follow(follower=request.user.profile, followed=user_profile3)
         follow_s.save()
         return redirect('user_profile', user_profile3.user.username)
+
+@login_required(login_url='/accounts/login/')
+def new_post(request):
+    current_user = request.user
+    profile = Profile.get_profile(current_user)
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = current_user
+            post.likes = 0
+            post.save()
+        return redirect('index')
+
+    else:
+        form = NewPostForm()
+    return render(request, 'new_post.html', {"form": form})
